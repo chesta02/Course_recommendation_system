@@ -55,7 +55,7 @@ def build_profile_gaps(profile: dict) -> list[dict]:
     for competency in profile["competencies"]:
         gap = build_competency_gap(competency)
 
-        # Only recommend training when an actual gap exists.
+    
         if gap["gap"] > 0:
             gaps.append(gap)
 

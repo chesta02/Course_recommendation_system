@@ -117,10 +117,8 @@ def get_competency_terms(competency: str) -> set[str]:
 
     return {normalized}
 
-
-# ---------------------------------------------------------------------------
 # Competency / domain relevance
-# ---------------------------------------------------------------------------
+
 
 def competency_relevance(
     competency: str,
@@ -143,10 +141,9 @@ def competency_relevance(
 
     competency_terms = get_competency_terms(competency)
 
-    # -------------------------------------------------------
     # 1. Strong signal: competency/alias appears as
     #    complete words in title or domain
-    # -------------------------------------------------------
+
 
     for term in competency_terms:
 
@@ -161,9 +158,8 @@ def competency_relevance(
         if term_words.issubset(title_words):
             return 1.0
 
-    # -------------------------------------------------------
     # 2. Fallback: original competency word overlap
-    # -------------------------------------------------------
+
 
     competency_words = normalize_text(competency)
 
@@ -187,10 +183,7 @@ def competency_relevance(
         return 0.3
 
     return 0.0
-# ---------------------------------------------------------------------------
 # Level matching
-# ---------------------------------------------------------------------------
-
 def level_match(
     course_level: int,
     current_level: int,
@@ -231,10 +224,7 @@ def level_match(
 
     return 0.1
 
-
-# ---------------------------------------------------------------------------
 # Difficulty matching
-# ---------------------------------------------------------------------------
 
 def difficulty_match(
     course_difficulty: str,
@@ -275,10 +265,7 @@ def difficulty_match(
         0.5,
     )
 
-
-# ---------------------------------------------------------------------------
 # Level filtering
-# ---------------------------------------------------------------------------
 
 def filter_by_level(
     courses: list[dict],
@@ -308,10 +295,8 @@ def filter_by_level(
 
     return filtered
 
-
-# ---------------------------------------------------------------------------
 # Combined ranking
-# ---------------------------------------------------------------------------
+
 
 def calculate_ranking_score(
     similarity: float,
@@ -344,10 +329,8 @@ def calculate_ranking_score(
 
     return float(score)
 
-
-# ---------------------------------------------------------------------------
 # Course ranking
-# ---------------------------------------------------------------------------
+
 
 def rank_courses(
     query_vector: np.ndarray,
@@ -417,11 +400,7 @@ def rank_courses(
 
     return scored
 
-
-# ---------------------------------------------------------------------------
-# MMR
-# ---------------------------------------------------------------------------
-
+#MMR (Maximal Marginal Relevance) for diversity
 def mmr_rerank(
     candidates: list[dict],
     candidate_vectors: np.ndarray,
@@ -498,10 +477,7 @@ def mmr_rerank(
         for index in selected
     ]
 
-
-# ---------------------------------------------------------------------------
 # Main recommendation function
-# ---------------------------------------------------------------------------
 
 def recommend_courses(
     gap_description: str,
@@ -534,28 +510,20 @@ def recommend_courses(
       ↓
     Top-K
     """
-
-    # -------------------------------------------------------
     # 1. Embed the competency gap
-    # -------------------------------------------------------
+
 
     query_vector = model.encode(
         gap_description
     )
-
-    # -------------------------------------------------------
     # 2. Filter courses by required level
-    # -------------------------------------------------------
 
     filtered_courses = filter_by_level(
         catalogue_courses,
         official_current_level,
         required_level,
     )
-
-    # -------------------------------------------------------
     # 3. Match vectors with filtered courses
-    # -------------------------------------------------------
 
     vector_by_id = {
         course["id"]: vector
@@ -572,9 +540,7 @@ def recommend_courses(
         ]
     )
 
-    # -------------------------------------------------------
     # 4. Multi-signal ranking
-    # -------------------------------------------------------
 
     ranked = rank_courses(
         query_vector=query_vector,
@@ -585,10 +551,7 @@ def recommend_courses(
         required_level=required_level,
     )
 
-    # -------------------------------------------------------
     # 5. Take top candidates for MMR
-    # -------------------------------------------------------
-
     pool = ranked[:mmr_pool_size]
 
     pool_vectors = np.array(
@@ -597,10 +560,7 @@ def recommend_courses(
             for course in pool
         ]
     )
-
-    # -------------------------------------------------------
     # 6. MMR diversity
-    # -------------------------------------------------------
 
     final_results = mmr_rerank(
         candidates=pool,
@@ -608,10 +568,7 @@ def recommend_courses(
         top_k=top_k,
         lambda_param=mmr_lambda,
     )
-
-    # -------------------------------------------------------
     # 7. Final ordering
-    # -------------------------------------------------------
 
     final_results.sort(
         key=lambda course: course["ranking_score"],

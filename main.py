@@ -5,11 +5,6 @@ from catalogue import COURSES
 from recommend import recommend_courses
 from competency import build_profile_gaps
 
-
-# ---------------------------------------------------------------------------
-# Startup
-# ---------------------------------------------------------------------------
-
 print("[Pipeline A] Loading embedding model (all-MiniLM-L6-v2)...")
 
 model = SentenceTransformer("all-MiniLM-L6-v2")
@@ -29,11 +24,6 @@ print(
     "[Pipeline A] Catalogue embeddings ready. Vector dim:",
     CATALOGUE_VECTORS.shape[1],
 )
-
-
-# ---------------------------------------------------------------------------
-# Recommendation Engine
-# ---------------------------------------------------------------------------
 
 def get_recommendations(
     gap_description: str,
@@ -102,16 +92,6 @@ def get_recommendations(
         }
         for r in results
     ]
-
-
-# ---------------------------------------------------------------------------
-# Official Profile
-#              ↓
-# Competency Gap Engine
-#              ↓
-# Recommendation Engine
-# ---------------------------------------------------------------------------
-
 def get_profile_recommendations(
     official_profile: dict,
     top_k: int = 3,
@@ -168,23 +148,9 @@ def get_profile_recommendations(
         "gaps": results,
     }
 
-
-# ---------------------------------------------------------------------------
 # MVP Test
-# ---------------------------------------------------------------------------
 
 if __name__ == "__main__":
-
-    # Example official profile.
-    #
-    # In the final system these values can come from:
-    #   - HR/profile database
-    #   - user form
-    #   - competency assessment
-    #   - AI-assisted profile extraction
-    #
-    # For the MVP we use structured mock data.
-
     official_profile = {
 
         "official_id": "OFF-001",
@@ -254,21 +220,10 @@ if __name__ == "__main__":
         ],
     }
 
-
-    # -----------------------------------------------------------------------
-    # Run complete pipeline
-    # -----------------------------------------------------------------------
-
     profile_result = get_profile_recommendations(
         official_profile,
         top_k=3,
     )
-
-
-    # -----------------------------------------------------------------------
-    # Display Results
-    # -----------------------------------------------------------------------
-
     print("\n")
     print("========================================")
     print("        OFFICIAL TRAINING PROFILE")
@@ -283,11 +238,6 @@ if __name__ == "__main__":
         "Role:",
         profile_result["role"],
     )
-
-
-    # -----------------------------------------------------------------------
-    # Display competency gaps and recommendations
-    # -----------------------------------------------------------------------
 
     for gap in profile_result["gaps"]:
 
@@ -326,12 +276,6 @@ if __name__ == "__main__":
 
 
         print("\nRecommended courses:")
-
-
-        # -------------------------------------------------------------------
-        # Display Top-K recommendations
-        # -------------------------------------------------------------------
-
         for rank, course in enumerate(
             gap["recommendations"],
             start=1,
