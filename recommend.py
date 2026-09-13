@@ -1,6 +1,7 @@
 import re
 import numpy as np
 
+MIN_RELEVANCE_SCORE = 0.70
 def cosine_similarity(a: np.ndarray, b: np.ndarray) -> float:
     """Calculate cosine similarity between two vectors."""
 
@@ -554,10 +555,9 @@ def recommend_courses(
         lambda_param=mmr_lambda,
     )
     # 7. Final ordering
+    final_results.sort(key=lambda course: course["ranking_score"], reverse=True)
 
-    final_results.sort(
-        key=lambda course: course["ranking_score"],
-        reverse=True,
-    )
+    if not final_results or final_results[0]["ranking_score"] < MIN_RELEVANCE_SCORE:
+        return []
 
     return final_results

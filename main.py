@@ -1,6 +1,5 @@
 import numpy as np
 from sentence_transformers import SentenceTransformer
-
 from catalogue import COURSES
 from recommend import recommend_courses
 from competency import build_profile_gaps
@@ -55,6 +54,8 @@ def get_recommendations(
         catalogue_vectors=CATALOGUE_VECTORS,
         top_k=top_k,
     )
+    if not results:
+        return []
 
     return [
         {
@@ -92,6 +93,7 @@ def get_recommendations(
         }
         for r in results
     ]
+
 def get_profile_recommendations(
     official_profile: dict,
     top_k: int = 3,
@@ -273,7 +275,11 @@ if __name__ == "__main__":
             "Evidence:",
             gap["evidence"],
         )
-
+        if not gap["recommendations"]:
+            print("CONTENT GAP")
+            print("No suitable training programme found for this competency.")
+            print(f"Competency: {gap['competency']}")
+            continue
 
         print("\nRecommended courses:")
         for rank, course in enumerate(
