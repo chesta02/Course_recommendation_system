@@ -1,8 +1,6 @@
 import re
 import numpy as np
 
-# Similarity
-
 def cosine_similarity(a: np.ndarray, b: np.ndarray) -> float:
     """Calculate cosine similarity between two vectors."""
 
@@ -21,11 +19,6 @@ def normalize_similarity(score: float) -> float:
     """Convert cosine similarity from [-1, 1] to [0, 1]."""
 
     return (score + 1.0) / 2.0
-
-
-# ---------------------------------------------------------------------------
-# Text utilities
-# ---------------------------------------------------------------------------
 
 def normalize_text(text: str) -> set[str]:
     """Convert text into lowercase words."""
