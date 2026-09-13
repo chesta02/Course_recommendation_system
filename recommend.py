@@ -1,10 +1,7 @@
 import re
 import numpy as np
 
-
-# ---------------------------------------------------------------------------
 # Similarity
-# ---------------------------------------------------------------------------
 
 def cosine_similarity(a: np.ndarray, b: np.ndarray) -> float:
     """Calculate cosine similarity between two vectors."""
@@ -39,10 +36,7 @@ def normalize_text(text: str) -> set[str]:
 
     return set(words)
 
-
-# ---------------------------------------------------------------------------
 # Competency aliases
-# ---------------------------------------------------------------------------
 
 COMPETENCY_ALIASES = {
     "machine learning": {
@@ -118,8 +112,6 @@ def get_competency_terms(competency: str) -> set[str]:
     return {normalized}
 
 # Competency / domain relevance
-
-
 def competency_relevance(
     competency: str,
     course: dict,
