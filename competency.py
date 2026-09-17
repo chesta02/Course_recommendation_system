@@ -3,11 +3,11 @@ def calculate_gap(required_level: int, current_level: int) -> int:
     Calculate the competency gap.
     """
 
-    if not 1 <= required_level <= 5:
-        raise ValueError("required_level must be between 1 and 5")
+    if not 0 <= required_level <= 5:
+        raise ValueError("required_level must be between 0 and 5")
 
-    if not 1 <= current_level <= 5:
-        raise ValueError("current_level must be between 1 and 5")
+    if not 0 <= current_level <= 5:
+        raise ValueError("current_level must be between 0 and 5")
 
     return max(0, required_level - current_level)
 
